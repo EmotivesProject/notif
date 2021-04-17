@@ -26,8 +26,7 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notification.Username = fmt.Sprintf("%v", username)
-	notification.Seen = false
+	notification = notification.FillNotification(fmt.Sprintf("%v", username))
 
 	err = db.CreateNotification(&notification)
 	if err != nil {
@@ -41,10 +40,10 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 }
 
 func getNotificationList(w http.ResponseWriter, r *http.Request) {
-	skip := findSkip(r)
+	page := findPage(r)
 	username := r.Context().Value(verification.UserID)
 
-	notifications := db.FindNotificationsByUsername(fmt.Sprintf("%v", username), skip)
+	notifications := db.FindNotificationsByUsername(fmt.Sprintf("%v", username), page)
 
 	response.ResultResponseJSON(w, http.StatusOK, notifications)
 }

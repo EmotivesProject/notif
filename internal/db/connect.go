@@ -1,51 +1,41 @@
 package db
 
 import (
-	"fmt"
-	"notif/model"
-	"os"
+	"context"
+	"log"
+	"time"
 
 	"github.com/TomBowyerResearchProject/common/logger"
 
-	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var (
-	database *gorm.DB
+	db *mongo.Database
 )
 
-//ConnectDB function: Make database connection
-func ConnectDB() {
-	err := godotenv.Load()
+func Connect() {
+	// Set client options
+	clientOptions := options.Client().ApplyURI("mongodb://admin:admin@mongo:27017")
+
+	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
+
+	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		logger.Fatal(err)
+		log.Fatal(err)
 	}
 
-	username := os.Getenv("databaseUser")
-	password := os.Getenv("databasePassword")
-	databaseName := os.Getenv("databaseName")
-	databaseHost := os.Getenv("databaseHost")
-
-	//Define DB connection string and connect
-	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", databaseHost, username, databaseName, password)
-	db, err := gorm.Open(postgres.Open(dbURI), &gorm.Config{})
+	err = client.Ping(ctx, nil)
 	if err != nil {
-		logger.Error(err)
+		log.Fatal(err)
 	}
 
-	err = db.AutoMigrate(
-		&model.Notification{},
-	)
-	if err != nil {
-		logger.Error(err)
-	}
+	logger.Info("Connected to MongoDB!")
 
-	logger.Info("Successfully connected to Database! ALL SYSTEMS ARE GO")
-	database = db
+	db = client.Database(DBName)
 }
 
-func GetDB() *gorm.DB {
-	return database
+func GetDatabase() *mongo.Database {
+	return db
 }

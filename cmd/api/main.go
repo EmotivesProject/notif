@@ -23,7 +23,7 @@ func main() {
 		AuthorizationSecret: "qutSecret",
 	})
 
-	db.ConnectDB()
+	db.Connect()
 
 	err := godotenv.Load()
 	if err != nil {
