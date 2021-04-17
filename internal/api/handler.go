@@ -17,6 +17,7 @@ func healthz(w http.ResponseWriter, r *http.Request) {
 }
 
 func createNotification(w http.ResponseWriter, r *http.Request) {
+	username := r.Context().Value(verification.UserID)
 	var notification model.Notification
 	err := json.NewDecoder(r.Body).Decode(&notification)
 	if err != nil {
@@ -24,6 +25,9 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 		response.MessageResponseJSON(w, http.StatusOK, response.Message{Message: err.Error()})
 		return
 	}
+
+	notification.Username = fmt.Sprintf("%v", username)
+	notification.Seen = false
 
 	err = db.CreateNotification(&notification)
 	if err != nil {
