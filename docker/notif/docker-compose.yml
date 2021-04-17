@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: ../../.
+      dockerfile: docker/notif/Dockerfile
+    volumes:
+      - ../../:/app
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - BASE_HOST=http://
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.notif.rule=Host(`notif.localhost`)"
+      - "traefik.http.routers.notif.entrypoints=web"
+      - "traefik.docker.network=traefik"
+    restart: unless-stopped
+    networks:
+      traefik:
+      default:
+      emotives:
+        aliases:
+          - notif
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: tom123
+      POSTGRES_USER: tom
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+      - ../../database/initial/:/docker-entrypoint-initdb.d/
+    restart: unless-stopped
+    networks:
+      default:
+
+volumes:
+  postgres-data:
+
+networks:
+  emotives:
+    external:
+      name: emotives
+  default:
+  traefik:
+    external:
+      name: traefik
