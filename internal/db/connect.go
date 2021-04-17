@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"metrics/model"
+	"notif/model"
 	"os"
 
 	"github.com/TomBowyerResearchProject/common/logger"
@@ -36,7 +36,7 @@ func ConnectDB() {
 	}
 
 	err = db.AutoMigrate(
-		&model.CustomerEvent{},
+		&model.Notification{},
 	)
 	if err != nil {
 		logger.Error(err)
