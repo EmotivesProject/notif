@@ -15,6 +15,7 @@ services:
       - "traefik.http.routers.notif.rule=Host(`notif.emotives.net`)"
       - "traefik.http.routers.notif.tls=true"
       - "traefik.http.routers.notif.tls.certresolver=letsencrypt"
+      - "traefik.docker.network=traefik"
     restart: unless-stopped
     networks:
       traefik:
