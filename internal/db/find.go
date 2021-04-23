@@ -14,7 +14,7 @@ const (
 	paged = 5
 )
 
-func FindNotificationsByUsername(username string, pageOffset int64) []model.Notification {
+func FindNotificationsByUsername(username string, pageOffset int64) *[]model.Notification {
 	var notifications []model.Notification
 
 	query := bson.M{"username": username}
@@ -28,7 +28,7 @@ func FindNotificationsByUsername(username string, pageOffset int64) []model.Noti
 	notifCollection := db.Collection(NotificationsCollection)
 	cursor, err := notifCollection.Find(context.TODO(), query, findOptions)
 	if err == mongo.ErrNoDocuments {
-		return notifications
+		return &notifications
 	}
 
 	for cursor.Next(context.TODO()) {
@@ -43,5 +43,5 @@ func FindNotificationsByUsername(username string, pageOffset int64) []model.Noti
 		notifications = append(notifications, notification)
 	}
 
-	return notifications
+	return &notifications
 }

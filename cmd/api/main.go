@@ -6,9 +6,11 @@ import (
 	"os"
 
 	"notif/internal/api"
+	"notif/internal/consumer"
 	"notif/internal/db"
 
 	"github.com/TomBowyerResearchProject/common/logger"
+	"github.com/TomBowyerResearchProject/common/middlewares"
 	"github.com/TomBowyerResearchProject/common/verification"
 	"github.com/joho/godotenv"
 )
@@ -23,12 +25,22 @@ func main() {
 		AuthorizationSecret: "qutSecret",
 	})
 
+	middlewares.Init(middlewares.Config{
+		AllowedOrigin:  "*",
+		AllowedMethods: "GET,POST,OPTIONS",
+		AllowedHeaders: "Accept, Content-Type, Content-Length, Authorization, Access-Control-Request-Headers, Access-Control-Request-Method, Connection, Host, Origin, User-Agent, Referer, Cache-Control, X-header",
+	})
+
 	db.Connect()
 
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	consumer.Init()
+	go consumer.Run()
+
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 

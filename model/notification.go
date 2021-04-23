@@ -16,10 +16,15 @@ type Notification struct {
 	Seen      bool               `bson:"seen" json:"seen"`
 }
 
-func (n Notification) FillNotification(username string) Notification {
-	n.ID = primitive.NewObjectID()
-	n.Username = username
-	n.Seen = false
-	n.CreatedAt = time.Now()
-	return n
+// Might need to make this smarter, not sure
+func CreateNotificationFromMap(jsonMap map[string]interface{}) Notification {
+	return Notification{
+		ID:        primitive.NewObjectID(),
+		Username:  jsonMap["username"].(string),
+		Title:     jsonMap["title"].(string),
+		Message:   jsonMap["message"].(string),
+		Link:      jsonMap["link"].(string),
+		CreatedAt: time.Now(),
+		Seen:      false,
+	}
 }
