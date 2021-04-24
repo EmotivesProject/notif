@@ -12,6 +12,7 @@ import (
 	commonKafka "github.com/TomBowyerResearchProject/common/kafka"
 	"github.com/TomBowyerResearchProject/common/logger"
 	"github.com/TomBowyerResearchProject/common/middlewares"
+	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
 	"github.com/TomBowyerResearchProject/common/verification"
 	"github.com/joho/godotenv"
 )
@@ -32,7 +33,10 @@ func main() {
 		AllowedHeaders: "Accept, Content-Type, Content-Length, Authorization, Access-Control-Request-Headers, Access-Control-Request-Method, Connection, Host, Origin, User-Agent, Referer, Cache-Control, X-header",
 	})
 
-	db.Connect()
+	commonMongo.Connect(commonMongo.Config{
+		URI:    "mongodb://admin:admin@mongo:27017",
+		DBName: db.DBName,
+	})
 
 	err := godotenv.Load()
 	if err != nil {

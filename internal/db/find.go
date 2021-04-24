@@ -5,6 +5,7 @@ import (
 	"notif/model"
 
 	"github.com/TomBowyerResearchProject/common/logger"
+	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -24,7 +25,7 @@ func FindNotificationsByUsername(username string, pageOffset int64) *[]model.Not
 	findOptions.SetSkip(pageOffset * paged)
 	findOptions.SetLimit(paged)
 
-	db := GetDatabase()
+	db := commonMongo.GetDatabase()
 	notifCollection := db.Collection(NotificationsCollection)
 	cursor, err := notifCollection.Find(context.TODO(), query, findOptions)
 	if err == mongo.ErrNoDocuments {
