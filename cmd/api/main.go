@@ -9,6 +9,7 @@ import (
 	"notif/internal/consumer"
 	"notif/internal/db"
 
+	commonKafka "github.com/TomBowyerResearchProject/common/kafka"
 	"github.com/TomBowyerResearchProject/common/logger"
 	"github.com/TomBowyerResearchProject/common/middlewares"
 	"github.com/TomBowyerResearchProject/common/verification"
@@ -38,8 +39,13 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	consumer.Init()
-	go consumer.Run()
+	commonKafka.InitConsumer(commonKafka.ConfigConsumer{
+		Topic:  "NOTIF",
+		Server: "kafka:9092",
+		Group:  "notif",
+		Handle: consumer.CreateNotificationFromKafkaMessage,
+	})
+	go commonKafka.Run()
 
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
