@@ -10,11 +10,13 @@ import (
 
 func CreateNotification(notif *model.Notification) error {
 	_, err := insetIntoCollection(NotificationsCollection, notif)
+
 	return err
 }
 
 func insetIntoCollection(collectionName string, document interface{}) (*mongo.InsertOneResult, error) {
 	db := commonMongo.GetDatabase()
 	collection := db.Collection(collectionName)
+
 	return collection.InsertOne(context.TODO(), document)
 }

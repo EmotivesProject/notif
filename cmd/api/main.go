@@ -3,18 +3,14 @@ package main
 import (
 	"log"
 	"net/http"
+	"notif/internal/api"
+	"notif/internal/db"
 	"os"
 
-	"notif/internal/api"
-	"notif/internal/consumer"
-	"notif/internal/db"
-
-	commonKafka "github.com/TomBowyerResearchProject/common/kafka"
 	"github.com/TomBowyerResearchProject/common/logger"
 	"github.com/TomBowyerResearchProject/common/middlewares"
 	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
 	"github.com/TomBowyerResearchProject/common/verification"
-	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -30,31 +26,19 @@ func main() {
 	middlewares.Init(middlewares.Config{
 		AllowedOrigin:  "*",
 		AllowedMethods: "GET,POST,OPTIONS",
+		// nolint:lll
 		AllowedHeaders: "Accept, Content-Type, Content-Length, Authorization, Access-Control-Request-Headers, Access-Control-Request-Method, Connection, Host, Origin, User-Agent, Referer, Cache-Control, X-header",
 	})
 
-	commonMongo.Connect(commonMongo.Config{
-		URI:    "mongodb://admin:admin@mongo:27017",
+	err := commonMongo.Connect(commonMongo.Config{
+		URI:    "mongodb://admin:admin@mongo_db:27017",
 		DBName: db.DBName,
 	})
-
-	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal(err.Error())
 	}
-
-	commonKafka.InitConsumer(commonKafka.ConfigConsumer{
-		Topic:  "NOTIF",
-		Server: "kafka:9092",
-		Group:  "notif",
-		Handle: consumer.CreateNotificationFromKafkaMessage,
-	})
-	go commonKafka.Run()
-
-	host := os.Getenv("HOST")
-	port := os.Getenv("PORT")
 
 	logger.Info("STARTING SERVER")
 
-	log.Fatal(http.ListenAndServe(host+":"+port, router))
+	log.Fatal(http.ListenAndServe(os.Getenv("HOST")+":"+os.Getenv("PORT"), router))
 }

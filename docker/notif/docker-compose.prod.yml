@@ -2,14 +2,9 @@ version: '3'
 
 services:
   api:
-    build:
-      context: ../../.
-      dockerfile: docker/notif/Dockerfile.prod
+    image: ghcr.io/tombowyerresearchproject/notif_api:latest
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ../../:/app
-    environment:
-      - BASE_HOST=http://
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.notif.rule=Host(`notif.emotives.net`)"
@@ -17,31 +12,12 @@ services:
       - "traefik.http.routers.notif.tls.certresolver=letsencrypt"
       - "traefik.docker.network=traefik"
     restart: unless-stopped
-    depends_on:
-      - "mongo"
     networks:
       traefik:
       default:
       emotives:
         aliases:
           - notif
-
-  mongo:
-    image: mongo:latest
-    hostname: mongodb-server
-    environment:
-      MONGO_INITDB_DATABASE: notif-db
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-    volumes:
-      - mongodb_data:/data/db
-      - ../../db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    restart: unless-stopped
-    networks:
-      default:
-
-volumes:
-  mongodb_data:
 
 networks:
   emotives:

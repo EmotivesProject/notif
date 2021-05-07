@@ -16,7 +16,6 @@ type Notification struct {
 	Seen      bool               `bson:"seen" json:"seen"`
 }
 
-// Might need to make this smarter, not sure
 func CreateNotificationFromMap(jsonMap map[string]interface{}) Notification {
 	return Notification{
 		ID:        primitive.NewObjectID(),

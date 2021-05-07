@@ -8,39 +8,18 @@ services:
     volumes:
       - ../../:/app
       - /etc/localtime:/etc/localtime:ro
-    environment:
-      - BASE_HOST=http://
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.notif.rule=Host(`notif.localhost`)"
       - "traefik.http.routers.notif.entrypoints=web"
       - "traefik.docker.network=traefik"
     restart: unless-stopped
-    depends_on:
-      - "mongo"
     networks:
       traefik:
       default:
       emotives:
         aliases:
           - notif
-
-  mongo:
-    image: mongo:latest
-    hostname: mongodb-server
-    environment:
-      MONGO_INITDB_DATABASE: notif-db
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-    volumes:
-      - mongodb_data:/data/db
-      - ../../db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    restart: unless-stopped
-    networks:
-      default:
-
-volumes:
-  mongodb_data:
 
 networks:
   emotives:

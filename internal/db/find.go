@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"notif/model"
 
 	"github.com/TomBowyerResearchProject/common/logger"
@@ -27,17 +28,20 @@ func FindNotificationsByUsername(username string, pageOffset int64) *[]model.Not
 
 	db := commonMongo.GetDatabase()
 	notifCollection := db.Collection(NotificationsCollection)
+
 	cursor, err := notifCollection.Find(context.TODO(), query, findOptions)
-	if err == mongo.ErrNoDocuments {
+	if errors.Is(err, mongo.ErrNoDocuments) {
 		return &notifications
 	}
 
 	for cursor.Next(context.TODO()) {
-		//Create a value into which the single document can be decoded
+		// Create a value into which the single document can be decoded.
 		var notification model.Notification
+
 		err := cursor.Decode(&notification)
 		if err != nil {
 			logger.Error(err)
+
 			continue
 		}
 
