@@ -15,6 +15,7 @@ import (
 )
 
 const (
+	idParam       = "id"
 	linkParam     = "link"
 	usernameParam = "username"
 )
@@ -59,10 +60,29 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 	response.ResultResponseJSON(w, http.StatusOK, notification)
 }
 
-func updateNotificationToSeen(w http.ResponseWriter, r *http.Request) {
+func updateNotificationsToSeen(w http.ResponseWriter, r *http.Request) {
 	link := chi.URLParam(r, linkParam)
 	username := chi.URLParam(r, usernameParam)
 	db.UpdateNotificationsSeen(link, username)
+	response.MessageResponseJSON(w, http.StatusOK, response.Message{
+		Message: "Complete",
+	})
+}
+
+func updateNotificationToSeen(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, idParam)
+
+	primitiveID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		logger.Error(err)
+		response.MessageResponseJSON(w, http.StatusBadRequest, response.Message{
+			Message: err.Error(),
+		})
+
+		return
+	}
+
+	db.UpdateNotificationID(primitiveID)
 	response.MessageResponseJSON(w, http.StatusOK, response.Message{
 		Message: "Complete",
 	})

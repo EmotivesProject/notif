@@ -20,7 +20,8 @@ func CreateRouter() chi.Router {
 		r.Get("/", getNotificationList)
 		r.Post("/", createNotification)
 
-		r.Post("/{link}/{username}", updateNotificationToSeen)
+		r.Post("/{id}", updateNotificationToSeen)
+		r.Post("/{link}/{username}", updateNotificationsToSeen)
 	})
 
 	return r
