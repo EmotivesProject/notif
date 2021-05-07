@@ -15,15 +15,3 @@ type Notification struct {
 	CreatedAt time.Time          `bson:"created_at" json:"created_at"`
 	Seen      bool               `bson:"seen" json:"seen"`
 }
-
-func CreateNotificationFromMap(jsonMap map[string]interface{}) Notification {
-	return Notification{
-		ID:        primitive.NewObjectID(),
-		Username:  jsonMap["username"].(string),
-		Title:     jsonMap["title"].(string),
-		Message:   jsonMap["message"].(string),
-		Link:      jsonMap["link"].(string),
-		CreatedAt: time.Now(),
-		Seen:      false,
-	}
-}
