@@ -19,8 +19,8 @@ func main() {
 	logger.InitLogger("notif")
 
 	verification.Init(verification.VerificationConfig{
-		VerificationURL:     "http://uacl/authorize",
-		AuthorizationSecret: "qutSecret",
+		VerificationURL:     os.Getenv("VERIFICATION_URL"),
+		AuthorizationSecret: os.Getenv("AUTHORIZATION_SECRET"),
 	})
 
 	middlewares.Init(middlewares.Config{
@@ -31,7 +31,7 @@ func main() {
 	})
 
 	err := commonMongo.Connect(commonMongo.Config{
-		URI:    "mongodb://admin:admin@mongo_db:27017",
+		URI:    os.Getenv("DATABASE_URL"),
 		DBName: db.DBName,
 	})
 	if err != nil {

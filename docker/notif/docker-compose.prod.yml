@@ -5,6 +5,12 @@ services:
     image: ghcr.io/tombowyerresearchproject/notif_api:latest
     volumes:
       - /etc/localtime:/etc/localtime:ro
+    environment:
+      DATABASE_URL: mongodb://admin:admin@mongo_db:27017
+      VERIFICATION_URL: http://uacl/authorize
+      HOST: 0.0.0.0
+      PORT: 80
+      AUTHORIZATION_SECRET: qutSecret
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.notif.rule=Host(`notif.emotives.net`)"
