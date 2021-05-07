@@ -10,7 +10,13 @@ import (
 	"github.com/TomBowyerResearchProject/common/logger"
 	"github.com/TomBowyerResearchProject/common/response"
 	"github.com/TomBowyerResearchProject/common/verification"
+	"github.com/go-chi/chi"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
+const (
+	linkParam     = "link"
+	usernameParam = "username"
 )
 
 func getNotificationList(w http.ResponseWriter, r *http.Request) {
@@ -51,4 +57,13 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.ResultResponseJSON(w, http.StatusOK, notification)
+}
+
+func updateNotificationToSeen(w http.ResponseWriter, r *http.Request) {
+	link := chi.URLParam(r, linkParam)
+	username := chi.URLParam(r, usernameParam)
+	db.UpdateNotificationsSeen(link, username)
+	response.MessageResponseJSON(w, http.StatusOK, response.Message{
+		Message: "Complete",
+	})
 }
