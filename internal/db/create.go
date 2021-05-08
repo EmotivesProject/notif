@@ -2,13 +2,13 @@ package db
 
 import (
 	"context"
-	"notif/model"
 
 	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
+	commonNotification "github.com/TomBowyerResearchProject/common/notification"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CreateNotification(notif *model.Notification) error {
+func CreateNotification(notif *commonNotification.Notification) error {
 	_, err := insetIntoCollection(NotificationsCollection, notif)
 
 	return err

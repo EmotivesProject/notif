@@ -21,7 +21,12 @@ func CreateRouter() chi.Router {
 		r.Post("/", createNotification)
 
 		r.Post("/{id}", updateNotificationToSeen)
-		r.Post("/{link}/{username}", updateNotificationsToSeen)
+
+		r.Delete("/post/{id}", removeNotificationsByPostID)
+
+		r.Get("/type/{type_name}", getNotificationsByType)
+
+		r.Post("/link/{link}/username/{username}", updateNotificationsToSeen)
 	})
 
 	return r
