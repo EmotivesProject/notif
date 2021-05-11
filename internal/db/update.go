@@ -9,12 +9,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func UpdateNotificationsSeen(link, username string) {
+func UpdateNotificationsSeen(ctx context.Context, link, username string) {
 	db := commonMongo.GetDatabase()
 	notifCollection := db.Collection(NotificationsCollection)
 
 	_, err := notifCollection.UpdateMany(
-		context.TODO(),
+		ctx,
 		bson.M{
 			"link":     link,
 			"username": username,
@@ -28,12 +28,12 @@ func UpdateNotificationsSeen(link, username string) {
 	}
 }
 
-func UpdateNotificationID(id primitive.ObjectID) {
+func UpdateNotificationID(ctx context.Context, id primitive.ObjectID) {
 	db := commonMongo.GetDatabase()
 	notifCollection := db.Collection(NotificationsCollection)
 
 	_, err := notifCollection.UpdateMany(
-		context.TODO(),
+		ctx,
 		bson.M{
 			"_id": id,
 		},

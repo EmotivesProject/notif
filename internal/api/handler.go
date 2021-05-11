@@ -34,7 +34,7 @@ func getNotificationList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notifications := db.FindNotificationsByUsername(username, page)
+	notifications := db.FindNotificationsByUsername(r.Context(), username, page)
 
 	response.ResultResponseJSON(w, http.StatusOK, notifications)
 }
@@ -51,7 +51,7 @@ func getNotificationsByType(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notifications := db.FindNotificationsByUsernameAndType(username, typeName)
+	notifications := db.FindNotificationsByUsernameAndType(r.Context(), username, typeName)
 
 	response.ResultResponseJSON(w, http.StatusOK, notifications)
 }
@@ -69,7 +69,7 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 	notification.CreatedAt = time.Now()
 	notification.Seen = false
 
-	if err := db.CreateNotification(notification); err != nil {
+	if err := db.CreateNotification(r.Context(), notification); err != nil {
 		logger.Error(err)
 		response.MessageResponseJSON(w, http.StatusBadRequest, response.Message{Message: err.Error()})
 
@@ -82,7 +82,7 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 func updateNotificationsToSeen(w http.ResponseWriter, r *http.Request) {
 	link := chi.URLParam(r, linkParam)
 	username := chi.URLParam(r, usernameParam)
-	db.UpdateNotificationsSeen(link, username)
+	db.UpdateNotificationsSeen(r.Context(), link, username)
 	response.MessageResponseJSON(w, http.StatusOK, response.Message{
 		Message: "Complete",
 	})
@@ -101,7 +101,7 @@ func updateNotificationToSeen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db.UpdateNotificationID(primitiveID)
+	db.UpdateNotificationID(r.Context(), primitiveID)
 	response.MessageResponseJSON(w, http.StatusOK, response.Message{
 		Message: "Complete",
 	})
@@ -117,7 +117,7 @@ func removeNotificationsByPostID(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	db.DeleteNotificationByPostID(idInt)
+	db.DeleteNotificationByPostID(r.Context(), idInt)
 	response.MessageResponseJSON(w, http.StatusOK, response.Message{
 		Message: "Complete",
 	})

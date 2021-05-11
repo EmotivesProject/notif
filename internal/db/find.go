@@ -16,7 +16,11 @@ const (
 	paged = 5
 )
 
-func FindNotificationsByUsername(username string, pageOffset int64) *[]commonNotification.Notification {
+func FindNotificationsByUsername(
+	ctx context.Context,
+	username string,
+	pageOffset int64,
+) *[]commonNotification.Notification {
 	var notifications []commonNotification.Notification
 
 	query := bson.M{"username": username}
@@ -29,12 +33,12 @@ func FindNotificationsByUsername(username string, pageOffset int64) *[]commonNot
 	db := commonMongo.GetDatabase()
 	notifCollection := db.Collection(NotificationsCollection)
 
-	cursor, err := notifCollection.Find(context.TODO(), query, findOptions)
+	cursor, err := notifCollection.Find(ctx, query, findOptions)
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		return &notifications
 	}
 
-	for cursor.Next(context.TODO()) {
+	for cursor.Next(ctx) {
 		// Create a value into which the single document can be decoded.
 		var notification commonNotification.Notification
 
@@ -51,7 +55,11 @@ func FindNotificationsByUsername(username string, pageOffset int64) *[]commonNot
 	return &notifications
 }
 
-func FindNotificationsByUsernameAndType(username, typeName string) *[]commonNotification.Notification {
+func FindNotificationsByUsernameAndType(
+	ctx context.Context,
+	username,
+	typeName string,
+) *[]commonNotification.Notification {
 	var notifications []commonNotification.Notification
 
 	query := bson.M{
@@ -66,12 +74,12 @@ func FindNotificationsByUsernameAndType(username, typeName string) *[]commonNoti
 	db := commonMongo.GetDatabase()
 	notifCollection := db.Collection(NotificationsCollection)
 
-	cursor, err := notifCollection.Find(context.TODO(), query, findOptions)
+	cursor, err := notifCollection.Find(ctx, query, findOptions)
 	if errors.Is(err, mongo.ErrNoDocuments) {
 		return &notifications
 	}
 
-	for cursor.Next(context.TODO()) {
+	for cursor.Next(ctx) {
 		// Create a value into which the single document can be decoded.
 		var notification commonNotification.Notification
 

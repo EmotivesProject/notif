@@ -8,12 +8,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func DeleteNotificationByPostID(postID int) {
+func DeleteNotificationByPostID(ctx context.Context, postID int) {
 	db := commonMongo.GetDatabase()
 	notifCollection := db.Collection(NotificationsCollection)
 
 	_, err := notifCollection.DeleteMany(
-		context.TODO(),
+		ctx,
 		bson.M{
 			"post_id": postID,
 		},
