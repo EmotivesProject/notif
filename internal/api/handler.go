@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 	"notif/internal/db"
-	"notif/model"
+	"strconv"
 	"time"
 
 	"github.com/TomBowyerResearchProject/common/logger"
+	commonNotification "github.com/TomBowyerResearchProject/common/notification"
 	"github.com/TomBowyerResearchProject/common/response"
 	"github.com/TomBowyerResearchProject/common/verification"
 	"github.com/go-chi/chi"
@@ -18,6 +19,7 @@ const (
 	idParam       = "id"
 	linkParam     = "link"
 	usernameParam = "username"
+	typeParam     = "type_name"
 )
 
 func getNotificationList(w http.ResponseWriter, r *http.Request) {
@@ -32,13 +34,30 @@ func getNotificationList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	notifications := db.FindNotificationsByUsername(username, page)
+	notifications := db.FindNotificationsByUsername(r.Context(), username, page)
+
+	response.ResultResponseJSON(w, http.StatusOK, notifications)
+}
+
+func getNotificationsByType(w http.ResponseWriter, r *http.Request) {
+	typeName := chi.URLParam(r, typeParam)
+
+	username, ok := r.Context().Value(verification.UserID).(string)
+	if !ok {
+		response.MessageResponseJSON(w, http.StatusOK, response.Message{
+			Message: "Failed to convert",
+		})
+
+		return
+	}
+
+	notifications := db.FindNotificationsByUsernameAndType(r.Context(), username, typeName)
 
 	response.ResultResponseJSON(w, http.StatusOK, notifications)
 }
 
 func createNotification(w http.ResponseWriter, r *http.Request) {
-	notification := &model.Notification{}
+	notification := &commonNotification.Notification{}
 	if err := json.NewDecoder(r.Body).Decode(notification); err != nil {
 		logger.Error(err)
 		response.MessageResponseJSON(w, http.StatusBadRequest, response.Message{Message: err.Error()})
@@ -50,7 +69,7 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 	notification.CreatedAt = time.Now()
 	notification.Seen = false
 
-	if err := db.CreateNotification(notification); err != nil {
+	if err := db.CreateNotification(r.Context(), notification); err != nil {
 		logger.Error(err)
 		response.MessageResponseJSON(w, http.StatusBadRequest, response.Message{Message: err.Error()})
 
@@ -63,7 +82,7 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 func updateNotificationsToSeen(w http.ResponseWriter, r *http.Request) {
 	link := chi.URLParam(r, linkParam)
 	username := chi.URLParam(r, usernameParam)
-	db.UpdateNotificationsSeen(link, username)
+	db.UpdateNotificationsSeen(r.Context(), link, username)
 	response.MessageResponseJSON(w, http.StatusOK, response.Message{
 		Message: "Complete",
 	})
@@ -82,7 +101,23 @@ func updateNotificationToSeen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db.UpdateNotificationID(primitiveID)
+	db.UpdateNotificationID(r.Context(), primitiveID)
+	response.MessageResponseJSON(w, http.StatusOK, response.Message{
+		Message: "Complete",
+	})
+}
+
+func removeNotificationsByPostID(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, idParam)
+
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		response.MessageResponseJSON(w, http.StatusBadRequest, response.Message{
+			Message: err.Error(),
+		})
+	}
+
+	db.DeleteNotificationByPostID(r.Context(), idInt)
 	response.MessageResponseJSON(w, http.StatusOK, response.Message{
 		Message: "Complete",
 	})

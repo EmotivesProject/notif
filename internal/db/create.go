@@ -2,21 +2,25 @@ package db
 
 import (
 	"context"
-	"notif/model"
 
 	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
+	commonNotification "github.com/TomBowyerResearchProject/common/notification"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CreateNotification(notif *model.Notification) error {
-	_, err := insetIntoCollection(NotificationsCollection, notif)
+func CreateNotification(ctx context.Context, notif *commonNotification.Notification) error {
+	_, err := insetIntoCollection(ctx, NotificationsCollection, notif)
 
 	return err
 }
 
-func insetIntoCollection(collectionName string, document interface{}) (*mongo.InsertOneResult, error) {
+func insetIntoCollection(
+	ctx context.Context,
+	collectionName string,
+	document interface{},
+) (*mongo.InsertOneResult, error) {
 	db := commonMongo.GetDatabase()
 	collection := db.Collection(collectionName)
 
-	return collection.InsertOne(context.TODO(), document)
+	return collection.InsertOne(ctx, document)
 }
