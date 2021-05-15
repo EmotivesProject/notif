@@ -48,14 +48,13 @@ func TearDownIntegrationTest() {
 }
 
 func CreateNotification(t *testing.T, username, token string) string {
-	requestBody := strings.NewReader(
-		fmt.Sprintf(
-			// nolint:lll
-			"{\"username\": \"%s\", \"type\": \"%s\", \"title\": \"yo\", \"message\": \"messess\", \"link\":\"ye\", \"post_id\":1}",
-			username,
-			notification.Like,
-		),
+	body := fmt.Sprintf(
+		"{\"username\": \"%s\", \"type\": \"%s\", \"title\": \"yo\","+
+			"\"message\": \"messess\", \"link\":\"ye\", \"post_id\":1}",
+		username,
+		notification.Like,
 	)
+	requestBody := strings.NewReader(body)
 
 	req, _ := http.NewRequest("POST", TS.URL+"/notification", requestBody)
 	req.Header.Add("Authorization", token)
