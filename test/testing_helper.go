@@ -1,15 +1,21 @@
 package test
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
+	"net/http"
 	"net/http/httptest"
 	"notif/internal/api"
 	"notif/internal/db"
+	"strings"
+	"testing"
 	"time"
 
 	"github.com/TomBowyerResearchProject/common/logger"
 	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
+	"github.com/TomBowyerResearchProject/common/notification"
+	commonTest "github.com/TomBowyerResearchProject/common/test"
 	"github.com/TomBowyerResearchProject/common/verification"
 )
 
@@ -39,4 +45,23 @@ func SetUpIntegrationTest() {
 
 func TearDownIntegrationTest() {
 	TS.Close()
+}
+
+func CreateNotification(t *testing.T, username, token string) string {
+	requestBody := strings.NewReader(
+		fmt.Sprintf(
+			// nolint:lll
+			"{\"username\": \"%s\", \"type\": \"%s\", \"title\": \"yo\", \"message\": \"messess\", \"link\":\"ye\", \"post_id\":1}",
+			username,
+			notification.Like,
+		),
+	)
+
+	req, _ := http.NewRequest("POST", TS.URL+"/notification", requestBody)
+	req.Header.Add("Authorization", token)
+
+	r, resultMap, _ := commonTest.CompleteTestRequest(t, req)
+	r.Body.Close()
+
+	return resultMap["id"].(string)
 }

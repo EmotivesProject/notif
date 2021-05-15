@@ -44,7 +44,7 @@ func getNotificationsByType(w http.ResponseWriter, r *http.Request) {
 
 	username, ok := r.Context().Value(verification.UserID).(string)
 	if !ok {
-		response.MessageResponseJSON(w, http.StatusOK, response.Message{
+		response.MessageResponseJSON(w, http.StatusBadRequest, response.Message{
 			Message: "Failed to convert",
 		})
 
@@ -76,7 +76,7 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.ResultResponseJSON(w, http.StatusOK, notification)
+	response.ResultResponseJSON(w, http.StatusCreated, notification)
 }
 
 func updateNotificationsToSeen(w http.ResponseWriter, r *http.Request) {
