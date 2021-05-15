@@ -50,8 +50,12 @@ func TearDownIntegrationTest() {
 func CreateNotification(t *testing.T, username, token string) string {
 	requestBody := strings.NewReader(
 		fmt.Sprintf(
-			// nolint:lll
-			"{\"username\": \"%s\", \"type\": \"%s\", \"title\": \"yo\", \"message\": \"messess\", \"link\":\"ye\", \"post_id\":1}",
+			`{\"username\": \"%s\",
+			\"type\": \"%s\",
+			\"title\": \"yo\",
+			\"message\": \"messess\",
+			\"link\":\"ye\",
+			\"post_id\":1}`,
 			username,
 			notification.Like,
 		),

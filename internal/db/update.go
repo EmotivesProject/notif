@@ -13,15 +13,15 @@ func UpdateNotificationsSeen(ctx context.Context, link, username string) {
 	db := commonMongo.GetDatabase()
 	notifCollection := db.Collection(NotificationsCollection)
 
+	update := bson.M{"$set": bson.M{"seen": true}}
+
 	_, err := notifCollection.UpdateMany(
 		ctx,
 		bson.M{
 			"link":     link,
 			"username": username,
 		},
-		bson.D{
-			{"$set", bson.D{{"seen", true}}}, //nolint:govet
-		},
+		update,
 	)
 	if err != nil {
 		logger.Error(err)
@@ -32,14 +32,14 @@ func UpdateNotificationID(ctx context.Context, id primitive.ObjectID) {
 	db := commonMongo.GetDatabase()
 	notifCollection := db.Collection(NotificationsCollection)
 
+	update := bson.M{"$set": bson.M{"seen": true}}
+
 	_, err := notifCollection.UpdateMany(
 		ctx,
 		bson.M{
 			"_id": id,
 		},
-		bson.D{
-			{"$set", bson.D{{"seen", true}}}, //nolint:govet
-		},
+		update,
 	)
 	if err != nil {
 		logger.Error(err)
