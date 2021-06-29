@@ -1,11 +1,16 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"log"
 	"net/http"
 	"notif/internal/api"
 	"notif/internal/db"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/TomBowyerResearchProject/common/logger"
 	"github.com/TomBowyerResearchProject/common/middlewares"
@@ -13,9 +18,9 @@ import (
 	"github.com/TomBowyerResearchProject/common/verification"
 )
 
-func main() {
-	router := api.CreateRouter()
+const timeBeforeTimeout = 15
 
+func main() {
 	logger.InitLogger("notif")
 
 	verification.Init(verification.VerificationConfig{
@@ -37,7 +42,43 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	logger.Info("STARTING SERVER")
+	router := api.CreateRouter()
 
-	log.Fatal(http.ListenAndServe(os.Getenv("HOST")+":"+os.Getenv("PORT"), router))
+	srv := http.Server{
+		Handler:      router,
+		Addr:         os.Getenv("HOST") + ":" + os.Getenv("PORT"),
+		WriteTimeout: timeBeforeTimeout * time.Second,
+		ReadTimeout:  timeBeforeTimeout * time.Second,
+	}
+
+	idleConnsClosed := make(chan struct{})
+
+	go func() {
+		sigint := make(chan os.Signal, 1)
+		signal.Notify(sigint, os.Interrupt, syscall.SIGTERM)
+		<-sigint
+
+		logger.Infof("Shutting down server")
+
+		if err := srv.Shutdown(context.Background()); err != nil {
+			logger.Infof("HTTP server Shutdown: %v", err)
+		}
+
+		monogodb := commonMongo.GetDatabase()
+		if monogodb != nil {
+			_ = monogodb.Client().Disconnect(context.Background())
+		}
+
+		logger.Infof("mongo disconnected")
+
+		close(idleConnsClosed)
+	}()
+
+	logger.Info("Starting Server")
+
+	if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+		logger.Infof("HTTP server ListenAndServe: %v", err)
+	}
+
+	<-idleConnsClosed
 }
