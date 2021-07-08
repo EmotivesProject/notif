@@ -11,6 +11,8 @@ services:
       HOST: 0.0.0.0
       PORT: 80
       AUTHORIZATION_SECRET: qutSecret
+    logging:
+      driver: syslog
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.notif.rule=Host(`notif.emotives.net`)"
