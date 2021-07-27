@@ -18,6 +18,10 @@ func CreateRouter() http.Handler {
 		r.Get("/healthz", response.Healthz)
 	})
 
+	r.With(verification.VerifyToken()).Route("/internal_notification", func(r chi.Router) {
+		r.Post("/", createNotification)
+	})
+
 	r.With(verification.VerifyJTW()).Route("/notification", func(r chi.Router) {
 		r.Get("/", getNotificationList)
 		r.Post("/", createNotification)
