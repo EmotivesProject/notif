@@ -40,7 +40,6 @@ func SetUpIntegrationTest() {
 		URI:    "mongodb://admin:admin@0.0.0.0:27015",
 		DBName: db.DBName,
 	})
-
 	if err != nil {
 		log.Fatal(err.Error())
 	}
