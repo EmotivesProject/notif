@@ -19,6 +19,11 @@ import (
 	"github.com/TomBowyerResearchProject/common/verification"
 )
 
+const (
+	uaclEndpoint     = "http://0.0.0.0:8082"
+	UaclUserEndpoint = uaclEndpoint + "/user"
+)
+
 var TS *httptest.Server
 
 func SetUpIntegrationTest() {
@@ -27,7 +32,8 @@ func SetUpIntegrationTest() {
 	logger.InitLogger("notif")
 
 	verification.Init(verification.VerificationConfig{
-		VerificationURL: "http://0.0.0.0:8082/authorize",
+		VerificationURL:     uaclEndpoint + "/authorize",
+		AuthorizationSecret: "secret",
 	})
 
 	err := commonMongo.Connect(commonMongo.Config{
@@ -56,8 +62,8 @@ func CreateNotification(t *testing.T, username, token string) string {
 	)
 	requestBody := strings.NewReader(body)
 
-	req, _ := http.NewRequest("POST", TS.URL+"/notification", requestBody)
-	req.Header.Add("Authorization", token)
+	req, _ := http.NewRequest("POST", TS.URL+"/internal_notification", requestBody)
+	req.Header.Add("Authorization", "secret")
 
 	r, resultMap, _ := commonTest.CompleteTestRequest(t, req)
 	r.Body.Close()

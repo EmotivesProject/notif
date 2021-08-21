@@ -15,7 +15,7 @@ import (
 func TestRouterDeleteNotifPostID(t *testing.T) {
 	test.SetUpIntegrationTest()
 
-	username, token := commonTest.CreateNewUser(t, "http://0.0.0.0:8082/user")
+	username, token := commonTest.CreateNewUser(t, test.UaclUserEndpoint)
 
 	test.CreateNotification(t, username, token)
 
