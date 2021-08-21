@@ -17,7 +17,7 @@ import (
 func TestRouterCreateNotif(t *testing.T) {
 	test.SetUpIntegrationTest()
 
-	username, token := commonTest.CreateNewUser(t, test.UaclUserEndpoint)
+	username, _ := commonTest.CreateNewUser(t, test.UaclUserEndpoint)
 
 	requestBody := strings.NewReader(
 		fmt.Sprintf(
@@ -27,8 +27,8 @@ func TestRouterCreateNotif(t *testing.T) {
 		),
 	)
 
-	req, _ := http.NewRequest("POST", test.TS.URL+"/notification", requestBody)
-	req.Header.Add("Authorization", token)
+	req, _ := http.NewRequest("POST", test.TS.URL+"/internal_notification", requestBody)
+	req.Header.Add("Authorization", "secret")
 
 	r, _, _ := commonTest.CompleteTestRequest(t, req)
 
