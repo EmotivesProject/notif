@@ -16,7 +16,7 @@ import (
 func TestRouterGetNotif(t *testing.T) {
 	test.SetUpIntegrationTest()
 
-	username, token := commonTest.CreateNewUser(t, "http://0.0.0.0:8082/user")
+	username, token := commonTest.CreateNewUser(t, test.UaclUserEndpoint)
 
 	test.CreateNotification(t, username, token)
 
@@ -33,7 +33,7 @@ func TestRouterGetNotif(t *testing.T) {
 func TestRouterGetNotifTpe(t *testing.T) {
 	test.SetUpIntegrationTest()
 
-	username, token := commonTest.CreateNewUser(t, "http://0.0.0.0:8082/user")
+	username, token := commonTest.CreateNewUser(t, test.UaclUserEndpoint)
 
 	test.CreateNotification(t, username, token)
 

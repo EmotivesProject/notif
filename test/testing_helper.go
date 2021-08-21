@@ -19,6 +19,11 @@ import (
 	"github.com/TomBowyerResearchProject/common/verification"
 )
 
+const (
+	uaclEndpoint     = "http://0.0.0.0:8082"
+	UaclUserEndpoint = uaclEndpoint + "/user"
+)
+
 var TS *httptest.Server
 
 func SetUpIntegrationTest() {
@@ -27,13 +32,14 @@ func SetUpIntegrationTest() {
 	logger.InitLogger("notif")
 
 	verification.Init(verification.VerificationConfig{
-		VerificationURL: "http://0.0.0.0:8082/authorize",
+		VerificationURL: uaclEndpoint + "/authorize",
 	})
 
 	err := commonMongo.Connect(commonMongo.Config{
 		URI:    "mongodb://admin:admin@0.0.0.0:27015",
 		DBName: db.DBName,
 	})
+
 	if err != nil {
 		log.Fatal(err.Error())
 	}
