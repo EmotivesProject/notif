@@ -24,13 +24,10 @@ func CreateRouter() http.Handler {
 
 	r.With(verification.VerifyJTW()).Route("/notification", func(r chi.Router) {
 		r.Get("/", getNotificationList)
-		r.Post("/", createNotification)
 
 		r.Post("/{id}", updateNotificationToSeen)
 
 		r.Delete("/post/{id}", removeNotificationsByPostID)
-
-		r.Get("/type/{type_name}", getNotificationsByType)
 
 		r.Post("/link/{link}/username/{username}", updateNotificationsToSeen)
 	})

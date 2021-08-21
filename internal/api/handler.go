@@ -19,7 +19,6 @@ const (
 	idParam       = "id"
 	linkParam     = "link"
 	usernameParam = "username"
-	typeParam     = "type_name"
 )
 
 func getNotificationList(w http.ResponseWriter, r *http.Request) {
@@ -35,23 +34,6 @@ func getNotificationList(w http.ResponseWriter, r *http.Request) {
 	}
 
 	notifications := db.FindNotificationsByUsername(r.Context(), username, page)
-
-	response.ResultResponseJSON(w, false, http.StatusOK, notifications)
-}
-
-func getNotificationsByType(w http.ResponseWriter, r *http.Request) {
-	typeName := chi.URLParam(r, typeParam)
-
-	username, ok := r.Context().Value(verification.UserID).(string)
-	if !ok {
-		response.MessageResponseJSON(w, false, http.StatusUnprocessableEntity, response.Message{
-			Message: "Failed to convert",
-		})
-
-		return
-	}
-
-	notifications := db.FindNotificationsByUsernameAndType(r.Context(), username, typeName)
 
 	response.ResultResponseJSON(w, false, http.StatusOK, notifications)
 }
