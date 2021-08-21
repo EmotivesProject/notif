@@ -32,7 +32,8 @@ func SetUpIntegrationTest() {
 	logger.InitLogger("notif")
 
 	verification.Init(verification.VerificationConfig{
-		VerificationURL: uaclEndpoint + "/authorize",
+		VerificationURL:     uaclEndpoint + "/authorize",
+		AuthorizationSecret: "secret",
 	})
 
 	err := commonMongo.Connect(commonMongo.Config{
@@ -63,7 +64,7 @@ func CreateNotification(t *testing.T, username, token string) string {
 	requestBody := strings.NewReader(body)
 
 	req, _ := http.NewRequest("POST", TS.URL+"/notification", requestBody)
-	req.Header.Add("Authorization", token)
+	req.Header.Add("Authorization", "secret")
 
 	r, resultMap, _ := commonTest.CompleteTestRequest(t, req)
 	r.Body.Close()
