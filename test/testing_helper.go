@@ -62,7 +62,7 @@ func CreateNotification(t *testing.T, username, token string) string {
 	)
 	requestBody := strings.NewReader(body)
 
-	req, _ := http.NewRequest("POST", TS.URL+"/notification", requestBody)
+	req, _ := http.NewRequest("POST", TS.URL+"/internal_notification", requestBody)
 	req.Header.Add("Authorization", "secret")
 
 	r, resultMap, _ := commonTest.CompleteTestRequest(t, req)
