@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"notif/internal/api"
 	"notif/internal/db"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -29,7 +30,11 @@ var TS *httptest.Server
 func SetUpIntegrationTest() {
 	rand.Seed(time.Now().Unix())
 
-	logger.InitLogger("notif")
+	logger.InitLogger("notif", logger.EmailConfig{
+		From:     os.Getenv("EMAIL_FROM"),
+		Password: os.Getenv("EMAIL_PASSWORD"),
+		Level:    os.Getenv("EMAIL_LEVEL"),
+	})
 
 	verification.Init(verification.VerificationConfig{
 		VerificationURL:     uaclEndpoint + "/authorize",
