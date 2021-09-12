@@ -21,30 +21,7 @@ import (
 const timeBeforeTimeout = 15
 
 func main() {
-	logger.InitLogger("notif", logger.EmailConfig{
-		From:     os.Getenv("EMAIL_FROM"),
-		Password: os.Getenv("EMAIL_PASSWORD"),
-		Level:    os.Getenv("EMAIL_LEVEL"),
-	})
-
-	verification.Init(verification.VerificationConfig{
-		VerificationURL:     os.Getenv("VERIFICATION_URL"),
-		AuthorizationSecret: os.Getenv("AUTHORIZATION_SECRET"),
-	})
-
-	middlewares.Init(middlewares.Config{
-		AllowedOrigin:  "*",
-		AllowedMethods: "GET,POST,OPTIONS",
-		AllowedHeaders: "*",
-	})
-
-	err := commonMongo.Connect(commonMongo.Config{
-		URI:    os.Getenv("DATABASE_URL"),
-		DBName: db.DBName,
-	})
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	initServices()
 
 	router := api.CreateRouter()
 
@@ -85,4 +62,31 @@ func main() {
 	}
 
 	<-idleConnsClosed
+}
+
+func initServices() {
+	logger.InitLogger("notif", logger.EmailConfig{
+		From:     os.Getenv("EMAIL_FROM"),
+		Password: os.Getenv("EMAIL_PASSWORD"),
+		Level:    os.Getenv("EMAIL_LEVEL"),
+	})
+
+	verification.Init(verification.VerificationConfig{
+		VerificationURL:     os.Getenv("VERIFICATION_URL"),
+		AuthorizationSecret: os.Getenv("AUTHORIZATION_SECRET"),
+	})
+
+	middlewares.Init(middlewares.Config{
+		AllowedOrigin:  "*",
+		AllowedMethods: "GET,POST,OPTIONS",
+		AllowedHeaders: "*",
+	})
+
+	err := commonMongo.Connect(commonMongo.Config{
+		URI:    os.Getenv("DATABASE_URL"),
+		DBName: db.DBName,
+	})
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 }
