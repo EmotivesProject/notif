@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/TomBowyerResearchProject/common/logger"
+	"github.com/TomBowyerResearchProject/common/middlewares"
 	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
 	"github.com/TomBowyerResearchProject/common/notification"
 	commonTest "github.com/TomBowyerResearchProject/common/test"
@@ -39,6 +40,12 @@ func SetUpIntegrationTest() {
 	verification.Init(verification.VerificationConfig{
 		VerificationURL:     uaclEndpoint + "/authorize",
 		AuthorizationSecret: "secret",
+	})
+
+	middlewares.Init(middlewares.Config{
+		AllowedOrigins: "*",
+		AllowedMethods: "GET,POST,OPTIONS,DELETE",
+		AllowedHeaders: "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token",
 	})
 
 	err := commonMongo.Connect(commonMongo.Config{
