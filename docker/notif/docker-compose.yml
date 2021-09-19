@@ -11,6 +11,7 @@ services:
       HOST: 0.0.0.0
       PORT: 80
       AUTHORIZATION_SECRET: qutSecret
+      ALLOWED_ORIGINS: http://localhost
     volumes:
       - ../../:/app
       - /etc/localtime:/etc/localtime:ro
