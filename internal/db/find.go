@@ -20,8 +20,8 @@ func FindNotificationsByUsername(
 	ctx context.Context,
 	username string,
 	pageOffset int64,
-) *[]commonNotification.Notification {
-	var notifications []commonNotification.Notification
+) []commonNotification.Notification {
+	notifications := make([]commonNotification.Notification, 0)
 
 	query := bson.M{"username": username}
 
@@ -35,7 +35,7 @@ func FindNotificationsByUsername(
 
 	cursor, err := notifCollection.Find(ctx, query, findOptions)
 	if errors.Is(err, mongo.ErrNoDocuments) {
-		return &notifications
+		return notifications
 	}
 
 	for cursor.Next(ctx) {
@@ -52,5 +52,5 @@ func FindNotificationsByUsername(
 		notifications = append(notifications, notification)
 	}
 
-	return &notifications
+	return notifications
 }
