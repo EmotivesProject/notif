@@ -63,7 +63,7 @@ func TearDownIntegrationTest() {
 	TS.Close()
 }
 
-func CreateNotification(t *testing.T, username, token string) string {
+func CreateNotification(t *testing.T, username, token string) float64 {
 	body := fmt.Sprintf(
 		"{\"username\": \"%s\", \"type\": \"%s\", \"title\": \"yo\","+
 			"\"message\": \"messess\", \"link\":\"ye\", \"post_id\":1}",
@@ -78,5 +78,5 @@ func CreateNotification(t *testing.T, username, token string) string {
 	r, resultMap, _ := commonTest.CompleteTestRequest(t, req)
 	r.Body.Close()
 
-	return resultMap["id"].(string)
+	return resultMap["id"].(float64)
 }

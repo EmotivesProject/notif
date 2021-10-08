@@ -44,7 +44,7 @@ func TestRouterUpdateNotif(t *testing.T) {
 
 	id := test.CreateNotification(t, username, token)
 
-	url := fmt.Sprintf("%s/notification/%s", test.TS.URL, id)
+	url := fmt.Sprintf("%s/notification/%d", test.TS.URL, int(id))
 
 	req, _ := http.NewRequest("POST", url, nil)
 	req.Header.Add("Authorization", token)
