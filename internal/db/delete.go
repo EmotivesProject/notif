@@ -8,7 +8,7 @@ import (
 
 func DeleteNotificationByPostID(ctx context.Context, postID int) {
 	connection := commonPostgres.GetDatabase()
-	connection.QueryRow(
+	_, _ = connection.Exec(
 		ctx,
 		`DELETE FROM notifications WHERE post_id = $1`,
 		postID,
