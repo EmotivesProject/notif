@@ -20,14 +20,14 @@ func CreateRouter() http.Handler {
 
 	r.With(verification.VerifyToken()).Route("/internal_notification", func(r chi.Router) {
 		r.Post("/", createNotification)
+
+		r.Delete("/post/{id}", removeNotificationsByPostID)
 	})
 
 	r.With(verification.VerifyJTW()).Route("/notification", func(r chi.Router) {
 		r.Get("/", getNotificationList)
 
 		r.Post("/{id}", updateNotificationToSeen)
-
-		r.Delete("/post/{id}", removeNotificationsByPostID)
 
 		r.Post("/link/{link}/username/{username}", updateNotificationsToSeen)
 	})
