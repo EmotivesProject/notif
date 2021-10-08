@@ -1,7 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"notif/internal/db"
 	"strconv"
@@ -12,7 +15,6 @@ import (
 	"github.com/TomBowyerResearchProject/common/response"
 	"github.com/TomBowyerResearchProject/common/verification"
 	"github.com/go-chi/chi"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const (
@@ -40,14 +42,27 @@ func getNotificationList(w http.ResponseWriter, r *http.Request) {
 
 func createNotification(w http.ResponseWriter, r *http.Request) {
 	notification := &commonNotification.Notification{}
+
+	buf, bodyErr := ioutil.ReadAll(r.Body)
+	if bodyErr != nil {
+		log.Print("bodyErr ", bodyErr.Error())
+		http.Error(w, bodyErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	rdr1 := ioutil.NopCloser(bytes.NewBuffer(buf))
+	rdr2 := ioutil.NopCloser(bytes.NewBuffer(buf))
+	log.Printf("BODY: %q", rdr1)
+	r.Body = rdr2
+
 	if err := json.NewDecoder(r.Body).Decode(notification); err != nil {
+		logger.Info("wqewe")
 		logger.Error(err)
 		response.MessageResponseJSON(w, false, http.StatusUnprocessableEntity, response.Message{Message: err.Error()})
 
 		return
 	}
 
-	notification.ID = primitive.NewObjectID()
 	notification.CreatedAt = time.Now()
 	notification.Seen = false
 
@@ -73,7 +88,7 @@ func updateNotificationsToSeen(w http.ResponseWriter, r *http.Request) {
 func updateNotificationToSeen(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, idParam)
 
-	primitiveID, err := primitive.ObjectIDFromHex(id)
+	idInt, err := strconv.Atoi(id)
 	if err != nil {
 		logger.Error(err)
 		response.MessageResponseJSON(w, false, http.StatusUnprocessableEntity, response.Message{
@@ -83,7 +98,7 @@ func updateNotificationToSeen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db.UpdateNotificationID(r.Context(), primitiveID)
+	db.UpdateNotificationID(r.Context(), idInt)
 	response.MessageResponseJSON(w, false, http.StatusOK, response.Message{
 		Message: "Complete",
 	})

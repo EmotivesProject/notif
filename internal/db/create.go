@@ -3,24 +3,27 @@ package db
 import (
 	"context"
 
-	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
 	commonNotification "github.com/TomBowyerResearchProject/common/notification"
-	"go.mongodb.org/mongo-driver/mongo"
+	commonPostgres "github.com/TomBowyerResearchProject/common/postgres"
 )
 
 func CreateNotification(ctx context.Context, notif *commonNotification.Notification) error {
-	_, err := insetIntoCollection(ctx, NotificationsCollection, notif)
+	connection := commonPostgres.GetDatabase()
 
-	return err
-}
-
-func insetIntoCollection(
-	ctx context.Context,
-	collectionName string,
-	document interface{},
-) (*mongo.InsertOneResult, error) {
-	db := commonMongo.GetDatabase()
-	collection := db.Collection(collectionName)
-
-	return collection.InsertOne(ctx, document)
+	return connection.QueryRow(
+		ctx,
+		`INSERT INTO notifications(username,type,title,message,link,post_id,username_to,created_at,seen)
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`,
+		notif.Username,
+		notif.Type,
+		notif.Title,
+		notif.Message,
+		notif.Link,
+		notif.PostID,
+		notif.UsernameTo,
+		notif.CreatedAt,
+		notif.Seen,
+	).Scan(
+		&notif.ID,
+	)
 }

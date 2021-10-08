@@ -2,14 +2,9 @@ package db
 
 import (
 	"context"
-	"errors"
 
-	"github.com/TomBowyerResearchProject/common/logger"
-	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
 	commonNotification "github.com/TomBowyerResearchProject/common/notification"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	commonPostgres "github.com/TomBowyerResearchProject/common/postgres"
 )
 
 const (
@@ -23,33 +18,41 @@ func FindNotificationsByUsername(
 ) []commonNotification.Notification {
 	notifications := make([]commonNotification.Notification, 0)
 
-	query := bson.M{"username": username}
+	connection := commonPostgres.GetDatabase()
 
-	findOptions := options.Find()
-	findOptions.SetSort(bson.M{"created_at": -1})
-	findOptions.SetSkip(pageOffset * paged)
-	findOptions.SetLimit(paged)
-
-	db := commonMongo.GetDatabase()
-	notifCollection := db.Collection(NotificationsCollection)
-
-	cursor, err := notifCollection.Find(ctx, query, findOptions)
-	if errors.Is(err, mongo.ErrNoDocuments) {
+	rows, err := connection.Query(
+		ctx,
+		`SELECT * FROM notifications
+		WHERE username = $1
+		ORDER BY created_at desc LIMIT $3 OFFSET $2`,
+		username,
+		pageOffset,
+		paged,
+	)
+	if err != nil {
 		return notifications
 	}
 
-	for cursor.Next(ctx) {
-		// Create a value into which the single document can be decoded.
-		var notification commonNotification.Notification
+	for rows.Next() {
+		var notif commonNotification.Notification
 
-		err := cursor.Decode(&notification)
+		err := rows.Scan(
+			&notif.ID,
+			&notif.Username,
+			&notif.Type,
+			&notif.Title,
+			&notif.Message,
+			&notif.Link,
+			&notif.PostID,
+			&notif.UsernameTo,
+			&notif.CreatedAt,
+			&notif.Seen,
+		)
 		if err != nil {
-			logger.Error(err)
-
 			continue
 		}
 
-		notifications = append(notifications, notification)
+		notifications = append(notifications, notif)
 	}
 
 	return notifications

@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"notif/internal/api"
-	"notif/internal/db"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,7 +13,7 @@ import (
 
 	"github.com/TomBowyerResearchProject/common/logger"
 	"github.com/TomBowyerResearchProject/common/middlewares"
-	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
+	commonPostgres "github.com/TomBowyerResearchProject/common/postgres"
 	"github.com/TomBowyerResearchProject/common/verification"
 )
 
@@ -45,9 +44,9 @@ func main() {
 			logger.Infof("HTTP server Shutdown: %v", err)
 		}
 
-		monogodb := commonMongo.GetDatabase()
-		if monogodb != nil {
-			_ = monogodb.Client().Disconnect(context.Background())
+		dbPost := commonPostgres.GetDatabase()
+		if dbPost != nil {
+			commonPostgres.CloseDatabase()
 		}
 
 		logger.Infof("mongo disconnected")
@@ -82,9 +81,8 @@ func initServices() {
 		AllowedHeaders: "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token",
 	})
 
-	err := commonMongo.Connect(commonMongo.Config{
-		URI:    os.Getenv("DATABASE_URL"),
-		DBName: db.DBName,
+	err := commonPostgres.Connect(commonPostgres.Config{
+		URI: os.Getenv("DATABASE_URL"),
 	})
 	if err != nil {
 		log.Fatal(err.Error())
