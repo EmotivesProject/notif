@@ -19,10 +19,10 @@ func TestRouterDeleteNotifPostID(t *testing.T) {
 
 	test.CreateNotification(t, username, token)
 
-	url := fmt.Sprintf("%s/notification/post/%d", test.TS.URL, 1)
+	url := fmt.Sprintf("%s/internal_notification/post/%d", test.TS.URL, 1)
 
 	req, _ := http.NewRequest("DELETE", url, nil)
-	req.Header.Add("Authorization", token)
+	req.Header.Add("Authorization", "secret")
 
 	r, _, _ := commonTest.CompleteTestRequest(t, req)
 
