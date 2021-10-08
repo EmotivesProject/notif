@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"notif/internal/api"
-	"notif/internal/db"
 	"os"
 	"strings"
 	"testing"
@@ -15,8 +14,8 @@ import (
 
 	"github.com/TomBowyerResearchProject/common/logger"
 	"github.com/TomBowyerResearchProject/common/middlewares"
-	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
 	"github.com/TomBowyerResearchProject/common/notification"
+	commonPostgres "github.com/TomBowyerResearchProject/common/postgres"
 	commonTest "github.com/TomBowyerResearchProject/common/test"
 	"github.com/TomBowyerResearchProject/common/verification"
 )
@@ -48,9 +47,8 @@ func SetUpIntegrationTest() {
 		AllowedHeaders: "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, X-CSRF-Token",
 	})
 
-	err := commonMongo.Connect(commonMongo.Config{
-		URI:    "mongodb://admin:admin@0.0.0.0:27015",
-		DBName: db.DBName,
+	err := commonPostgres.Connect(commonPostgres.Config{
+		URI: "postgres://tom:tom123@localhost:5435/notif_db",
 	})
 	if err != nil {
 		log.Fatal(err.Error())
@@ -65,7 +63,7 @@ func TearDownIntegrationTest() {
 	TS.Close()
 }
 
-func CreateNotification(t *testing.T, username, token string) string {
+func CreateNotification(t *testing.T, username, token string) float64 {
 	body := fmt.Sprintf(
 		"{\"username\": \"%s\", \"type\": \"%s\", \"title\": \"yo\","+
 			"\"message\": \"messess\", \"link\":\"ye\", \"post_id\":1}",
@@ -80,5 +78,5 @@ func CreateNotification(t *testing.T, username, token string) string {
 	r, resultMap, _ := commonTest.CompleteTestRequest(t, req)
 	r.Body.Close()
 
-	return resultMap["id"].(string)
+	return resultMap["id"].(float64)
 }

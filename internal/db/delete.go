@@ -3,22 +3,14 @@ package db
 import (
 	"context"
 
-	"github.com/TomBowyerResearchProject/common/logger"
-	commonMongo "github.com/TomBowyerResearchProject/common/mongo"
-	"go.mongodb.org/mongo-driver/bson"
+	commonPostgres "github.com/TomBowyerResearchProject/common/postgres"
 )
 
 func DeleteNotificationByPostID(ctx context.Context, postID int) {
-	db := commonMongo.GetDatabase()
-	notifCollection := db.Collection(NotificationsCollection)
-
-	_, err := notifCollection.DeleteMany(
+	connection := commonPostgres.GetDatabase()
+	_, _ = connection.Exec(
 		ctx,
-		bson.M{
-			"post_id": postID,
-		},
+		`DELETE FROM notifications WHERE post_id = $1`,
+		postID,
 	)
-	if err != nil {
-		logger.Error(err)
-	}
 }
