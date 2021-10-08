@@ -1,10 +1,7 @@
 package api
 
 import (
-	"bytes"
 	"encoding/json"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"notif/internal/db"
 	"strconv"
@@ -43,20 +40,7 @@ func getNotificationList(w http.ResponseWriter, r *http.Request) {
 func createNotification(w http.ResponseWriter, r *http.Request) {
 	notification := &commonNotification.Notification{}
 
-	buf, bodyErr := ioutil.ReadAll(r.Body)
-	if bodyErr != nil {
-		log.Print("bodyErr ", bodyErr.Error())
-		http.Error(w, bodyErr.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	rdr1 := ioutil.NopCloser(bytes.NewBuffer(buf))
-	rdr2 := ioutil.NopCloser(bytes.NewBuffer(buf))
-	log.Printf("BODY: %q", rdr1)
-	r.Body = rdr2
-
 	if err := json.NewDecoder(r.Body).Decode(notification); err != nil {
-		logger.Info("wqewe")
 		logger.Error(err)
 		response.MessageResponseJSON(w, false, http.StatusUnprocessableEntity, response.Message{Message: err.Error()})
 
