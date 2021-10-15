@@ -17,8 +17,8 @@ github.com/TomBowyerResearchProject/common/response v0.0.0-20210508000653-21ba51
 github.com/TomBowyerResearchProject/common/response v0.0.0-20210705074431-12706ef7b706/go.mod h1:fib988ehDtUcBwwwNhHWjQSSruMEEMCLb5QZnfyWU84=
 github.com/TomBowyerResearchProject/common/response v0.0.0-20210918225212-3eb04f0c81a1 h1:dzwp+FBAuvte5f0x6388XcrOqGQbHiyyyQ19YY6tJ4U=
 github.com/TomBowyerResearchProject/common/response v0.0.0-20210918225212-3eb04f0c81a1/go.mod h1:Ax7EgH/zdrg/LfGywMrg7NqeBm6JyIMSp0kPib09zxo=
-github.com/TomBowyerResearchProject/common/test v0.0.0-20210705095908-154760228061 h1:ndTUodbjlFSU+wI5WUB8NnuJqToDRL5YEt9kCETflaI=
-github.com/TomBowyerResearchProject/common/test v0.0.0-20210705095908-154760228061/go.mod h1:Gd8oCpA/4+/d7KArlGpxXLAZD29xd/0ENhBAIVWx+kk=
+github.com/TomBowyerResearchProject/common/response v0.0.0-20211015205805-83e9007bc2ab h1:+wLNfM2avdjsmLg3Soiig4vOf5y3JgjC+3yX3LtdSbg=
+github.com/TomBowyerResearchProject/common/response v0.0.0-20211015205805-83e9007bc2ab/go.mod h1:Ax7EgH/zdrg/LfGywMrg7NqeBm6JyIMSp0kPib09zxo=
 github.com/TomBowyerResearchProject/common/test v0.0.0-20211009215921-351832adaad3 h1:uIwU+Tnjmc1oh/WDbMt86sRjreIaM3kT/WgDcA4deKw=
 github.com/TomBowyerResearchProject/common/test v0.0.0-20211009215921-351832adaad3/go.mod h1:Gd8oCpA/4+/d7KArlGpxXLAZD29xd/0ENhBAIVWx+kk=
 github.com/TomBowyerResearchProject/common/verification v0.0.0-20210709105607-257260c9085d h1:RLA2534z3Bv4mZkn6DNTWzkBTRx8MJOiqHSaB3QaHoo=
