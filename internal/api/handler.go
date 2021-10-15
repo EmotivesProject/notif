@@ -34,6 +34,8 @@ func getNotificationList(w http.ResponseWriter, r *http.Request) {
 
 	notifications := db.FindNotificationsByUsername(r.Context(), username, page)
 
+	logger.Infof("Fetched notifications for %s on page %d", username, page)
+
 	response.ResultResponseJSON(w, false, http.StatusOK, notifications)
 }
 
@@ -57,6 +59,14 @@ func createNotification(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logger.Infof(
+		"Created notification for %s TYPE - %s TITLE - %s MESSAGE %s",
+		notification.Username,
+		notification.Type,
+		notification.Title,
+		notification.Message,
+	)
+
 	response.ResultResponseJSON(w, false, http.StatusCreated, notification)
 }
 
@@ -64,6 +74,9 @@ func updateNotificationsToSeen(w http.ResponseWriter, r *http.Request) {
 	link := chi.URLParam(r, linkParam)
 	username := chi.URLParam(r, usernameParam)
 	db.UpdateNotificationsSeen(r.Context(), link, username)
+
+	logger.Infof("Updated notifications to seen for %s link %s", username, link)
+
 	response.MessageResponseJSON(w, false, http.StatusOK, response.Message{
 		Message: "Complete",
 	})
@@ -83,6 +96,9 @@ func updateNotificationToSeen(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.UpdateNotificationID(r.Context(), idInt)
+
+	logger.Infof("Updated individual notification to seen %d", idInt)
+
 	response.MessageResponseJSON(w, false, http.StatusOK, response.Message{
 		Message: "Complete",
 	})
@@ -99,6 +115,9 @@ func removeNotificationsByPostID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.DeleteNotificationByPostID(r.Context(), idInt)
+
+	logger.Infof("Removed post notifications for id %d", idInt)
+
 	response.MessageResponseJSON(w, false, http.StatusOK, response.Message{
 		Message: "Complete",
 	})
