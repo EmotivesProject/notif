@@ -64,12 +64,14 @@ func TestRouterUpdateNotifLinkUsername(t *testing.T) {
 	test.CreateNotification(t, username, token)
 
 	url := fmt.Sprintf(
-		"%s/notification/link/ye/username/%s",
+		"%s/notification/link/username/%s",
 		test.TS.URL,
 		username,
 	)
 
-	req, _ := http.NewRequest("POST", url, nil)
+	requestBody := strings.NewReader("{\"url\": \"ye\"}")
+
+	req, _ := http.NewRequest("POST", url, requestBody)
 	req.Header.Add("Authorization", token)
 
 	r, _, _ := commonTest.CompleteTestRequest(t, req)
