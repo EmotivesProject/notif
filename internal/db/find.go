@@ -20,13 +20,15 @@ func FindNotificationsByUsername(
 
 	connection := commonPostgres.GetDatabase()
 
+	actualOffset := pageOffset * paged
+
 	rows, err := connection.Query(
 		ctx,
 		`SELECT * FROM notifications
 		WHERE username = $1
 		ORDER BY created_at desc LIMIT $3 OFFSET $2`,
 		username,
-		pageOffset,
+		actualOffset,
 		paged,
 	)
 	if err != nil {
