@@ -29,7 +29,7 @@ func CreateRouter() http.Handler {
 
 		r.Post("/{id}", updateNotificationToSeen)
 
-		r.Post("/link/{link}/username/{username}", updateNotificationsToSeen)
+		r.Post("/link/username/{username}", updateNotificationsToSeen)
 	})
 
 	return r
