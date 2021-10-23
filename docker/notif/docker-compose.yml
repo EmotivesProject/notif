@@ -10,7 +10,7 @@ services:
       VERIFICATION_URL: http://uacl/authorize
       HOST: 0.0.0.0
       PORT: 80
-      AUTHORIZATION_SECRET: devSecret
+      NOTIFICATION_AUTH: devSecret
       ALLOWED_ORIGINS: http://localhost
     volumes:
       - ../../:/app

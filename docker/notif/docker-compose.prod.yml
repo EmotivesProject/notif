@@ -10,7 +10,7 @@ services:
       VERIFICATION_URL: http://uacl/authorize
       HOST: 0.0.0.0
       PORT: 80
-      AUTHORIZATION_SECRET: "${AUTHORIZATION_SECRET:?}"
+      NOTIFICATION_AUTH: "${NOTIFICATION_AUTH:?}"
       EMAIL_FROM: emotives.acc@gmail.com
       EMAIL_PASSWORD: "${GMAIL_PASSWORD:-}"
       EMAIL_LEVEL: PROD
