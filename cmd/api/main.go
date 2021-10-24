@@ -72,7 +72,7 @@ func initServices() {
 
 	verification.Init(verification.VerificationConfig{
 		VerificationURL:     os.Getenv("VERIFICATION_URL"),
-		AuthorizationSecret: os.Getenv("AUTHORIZATION_SECRET"),
+		AuthorizationSecret: os.Getenv("NOTIFICATION_AUTH"),
 	})
 
 	middlewares.Init(middlewares.Config{
