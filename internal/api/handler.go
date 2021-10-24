@@ -113,6 +113,29 @@ func updateNotificationToSeen(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func removeLikeNotificationForUser(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, idParam)
+	username := chi.URLParam(r, usernameParam)
+
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		logger.Error(err)
+		response.MessageResponseJSON(w, false, http.StatusUnprocessableEntity, response.Message{
+			Message: err.Error(),
+		})
+
+		return
+	}
+
+	db.DeleteNotificationByPostIDUsernameAndType(r.Context(), idInt, username, "like")
+
+	logger.Infof("Remove notification like for post %d username %s", idInt, username)
+
+	response.MessageResponseJSON(w, false, http.StatusOK, response.Message{
+		Message: "Complete",
+	})
+}
+
 func removeNotificationsByPostID(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, idParam)
 
