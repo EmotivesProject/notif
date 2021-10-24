@@ -22,6 +22,8 @@ func CreateRouter() http.Handler {
 		r.Post("/", createNotification)
 
 		r.Delete("/post/{id}", removeNotificationsByPostID)
+
+		r.Delete("/like/post/{id}/user/{username}", removeLikeNotificationForUser)
 	})
 
 	r.With(verification.VerifyJTW()).Route("/notification", func(r chi.Router) {
