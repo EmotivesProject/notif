@@ -25,7 +25,7 @@ POST - /internal_notification - Used with notification_auth secret, it will crea
 DELETE - /internal_notification/post/{id} - used with notification_auth secret, it will delete notifications relating to the post id. This will happen if a user deletes a post.
 DELETE - /like/post/{id}/user/{username} - used with notification_auth secret, it will delete any like notification about the post id for the user. This is usually fired when someone unlikes a post to remove.
 
-Get - /notification - creates an autologin token for a user. Usage of the token is unlimited and has no expire date.
+GET - /notification - creates an autologin token for a user. Usage of the token is unlimited and has no expire date.
 POST - /notification/{id} - updates a notification id to seen.
 POST - /notification/link/username/{username} - Updates all notifications for the user to seen that has the same link as the one in the request body. This is used when a user has multiple notifications about a post or user messages and visits just one.
 ```
