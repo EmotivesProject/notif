@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/TomBowyerResearchProject/common/logger"
-	commonNotification "github.com/TomBowyerResearchProject/common/notification"
-	"github.com/TomBowyerResearchProject/common/response"
-	"github.com/TomBowyerResearchProject/common/verification"
+	"github.com/EmotivesProject/common/logger"
+	commonNotification "github.com/EmotivesProject/common/notification"
+	"github.com/EmotivesProject/common/response"
+	"github.com/EmotivesProject/common/verification"
 	"github.com/go-chi/chi"
 )
 
