@@ -12,12 +12,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TomBowyerResearchProject/common/logger"
-	"github.com/TomBowyerResearchProject/common/middlewares"
-	"github.com/TomBowyerResearchProject/common/notification"
-	commonPostgres "github.com/TomBowyerResearchProject/common/postgres"
-	commonTest "github.com/TomBowyerResearchProject/common/test"
-	"github.com/TomBowyerResearchProject/common/verification"
+	"github.com/EmotivesProject/common/logger"
+	"github.com/EmotivesProject/common/middlewares"
+	"github.com/EmotivesProject/common/notification"
+	commonPostgres "github.com/EmotivesProject/common/postgres"
+	commonTest "github.com/EmotivesProject/common/test"
+	"github.com/EmotivesProject/common/verification"
 )
 
 const (

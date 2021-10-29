@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/TomBowyerResearchProject/common/notification"
-	commonTest "github.com/TomBowyerResearchProject/common/test"
+	"github.com/EmotivesProject/common/notification"
+	commonTest "github.com/EmotivesProject/common/test"
 	"github.com/stretchr/testify/assert"
 )
 

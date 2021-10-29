@@ -3,8 +3,8 @@ package db
 import (
 	"context"
 
-	commonNotification "github.com/TomBowyerResearchProject/common/notification"
-	commonPostgres "github.com/TomBowyerResearchProject/common/postgres"
+	commonNotification "github.com/EmotivesProject/common/notification"
+	commonPostgres "github.com/EmotivesProject/common/postgres"
 )
 
 func CreateNotification(ctx context.Context, notif *commonNotification.Notification) error {
